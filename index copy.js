@@ -19,8 +19,15 @@ let balonY = 120
 let kecepatanY = 0
 let heating = false
 let tanahY = 160
-let pohonX = 800;
+let pohon = [
+  {x:800, y: 150},
+  {x:1200, y: 350},
+  {x:1600, y: 200},
+
+
+]
 let gameOver = false
+let score = 0
 function gambar_balon() {
   var kotak1 = [
     { x:265, y:650 },
@@ -82,32 +89,46 @@ let skirt = [
   lib.polygon(skirt, abu);
   // lib.FloodFillNonRecursive(225 + balonX,500 + balonY,merah,abu);
 }
-function gambar_pohon(x){
+function gambar_pohon(x,y){
 
     let batang = [
         {x:x, y:800},
         {x:x+40, y:800},
-        {x:x+40, y:650},
-        {x:x, y:650}
+        {x:x+40, y:800-y},
+        {x:x, y:800-y}
     ];
 
     let daun = [
-      {x:x+20, y:500},
-      {x:x-50, y:650},
-      {x:x+90, y:650},
+      {x:x+20, y:800-y-150},
+      {x:x-50, y:800-y},
+      {x:x+90, y:800-y},
     ]
 
     lib.polygon(batang, abu);
     lib.polygon(daun,abu)
-    lib.FloodFillNonRecursive(x+20,700,coklat,abu);
-    lib.FloodFillNonRecursive(x+20,600,hijau,abu);
+    // lib.FloodFillNonRecursive(x+20,700,coklat,abu);
+    // lib.FloodFillNonRecursive(x+20,600,hijau,abu);
 
 }
 function cek_collision(){
-  let balonnBawah = 650+balonY
-  if(pohonX < 320 && pohonX +40>130 && balonnBawah>650){
-    return true;
-  }
+  
+  let balonKiri = 250;
+  let balonKanan = 450;
+  let balonBawah = 810 + balonY;
+  for(let i=0;i<pohon.length;i++){
+
+    let pohonKiri = pohon[i].x;
+    let pohonKanan = pohon[i].x + 40;
+    let pohonAtas = 800 - pohon[i].y;
+    if(
+        balonKanan > pohonKiri &&
+        balonKiri < pohonKanan &&
+        balonBawah > pohonAtas
+      ){
+        return true;
+      }
+    }
+  
   return false
 }
 function update(){
@@ -117,7 +138,13 @@ function update(){
   lib.restart(context,canvas)
   // console.log("update jalan");
   // balonY -=1
-  pohonX -= 2;
+  for(let i = 0; i<pohon.length;i++){
+    pohon[i].x -=2
+    if(pohon[i].x <-100){
+      pohon[i].x =1200
+      pohon[i].y =Math.floor(Math.random()*250)+100
+    }
+  }
   if(heating){
     kecepatanY -= 2
   }
@@ -130,7 +157,6 @@ function update(){
   if(kecepatanY>5){
     kecepatanY = 5
   }
-  
   balonY += kecepatanY
 
   if(balonY > tanahY){
@@ -138,10 +164,13 @@ function update(){
     kecepatanY = 0
   }
   if(cek_collision()){
+    alert("tabrak")
     gameOver = true;
-}
+  }
   gambar_balon()
-  gambar_pohon(pohonX)
+  for(let i=0; i<pohon.length; i++){
+    gambar_pohon(pohon[i].x,pohon[i].y)
+}
   context.putImageData(lib.image_data,0,0 )
   requestAnimationFrame(update)
 }
