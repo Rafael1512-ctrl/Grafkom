@@ -20,14 +20,13 @@ let kecepatanY = 0
 let heating = false
 let tanahY = 160
 let pohon = [
-  {x:800, y: 150},
-  {x:1200, y: 350},
-  {x:1600, y: 200},
-
-
+  {x:800, y: 150, scored:false},
+  {x:1200, y: 350, scored:false},
+  {x:1600, y: 200, scored:false},
 ]
 let gameOver = false
 let score = 0
+const inpo_score = document.querySelector("#score");
 function gambar_balon() {
   var kotak1 = [
     { x:265, y:650 },
@@ -90,7 +89,6 @@ let skirt = [
   // lib.FloodFillNonRecursive(225 + balonX,500 + balonY,merah,abu);
 }
 function gambar_pohon(x,y){
-
     let batang = [
         {x:x, y:800},
         {x:x+40, y:800},
@@ -140,9 +138,15 @@ function update(){
   // balonY -=1
   for(let i = 0; i<pohon.length;i++){
     pohon[i].x -=2
+    if(!pohon[i].scored && pohon[i].x + 40 < 250){
+      score += 1
+      inpo_score.textContent = `Score: ${score}`
+      pohon[i].scored=true
+    }
     if(pohon[i].x <-100){
       pohon[i].x =1200
       pohon[i].y =Math.floor(Math.random()*250)+100
+      pohon[i].scored= false
     }
   }
   if(heating){
