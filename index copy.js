@@ -27,6 +27,10 @@ let pohon = [
 let gameOver = false
 let score = 0
 const inpo_score = document.querySelector("#score");
+let bensin = 100
+const bar_bensin = document.querySelector("#bensin");
+const inpo_bensin = document.querySelector("#teksbensin");
+
 function gambar_balon() {
   var kotak1 = [
     { x:265, y:650 },
@@ -149,8 +153,16 @@ function update(){
       pohon[i].scored= false
     }
   }
-  if(heating){
-    kecepatanY -= 2
+  if (heating && bensin > 0) {
+    kecepatanY -=2;
+    bensin -=0.08;
+
+    bar_bensin.value= bensin;
+    inpo_bensin.textContent = `${Math.ceil(bensin)}%`;
+
+    if (bensin === 0) {
+      heating = false;
+    }
   }
   kecepatanY += 0.1
 
