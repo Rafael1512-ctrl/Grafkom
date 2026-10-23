@@ -19,12 +19,16 @@ let balonY = 120
 let kecepatanY = 0
 let heating = false
 let tanahY = 160
+let backgroundOffset = 0
+const alasPohon = 920
 let pohon = [
   {x:800, y: 150, scored:false},
   {x:1200, y: 350, scored:false},
   {x:1600, y: 200, scored:false},
 ]
+let pohonLatar = [160, 390, 650, 970, 1280, 1580, 1780]
 let gameOver = false
+let gameStarted = false
 let score = 0
 const inpo_score = document.querySelector("#score");
 let bensin = 100
@@ -34,9 +38,6 @@ const inpo_bensin = document.querySelector("#teksbensin");
 function gambar_background() {
   const warnaAtas = { r: 184, g: 215, b: 138 };
   const warnaBawah = { r: 240, g: 242, b: 197 };
-  const garisBatas = abu;
-  const kanan = canvas.width - 1;
-  const bawah = canvas.height - 1;
 
   // Langit: warna tiap baris berubah perlahan dari atas ke bawah.
   for (let y = 0; y < canvas.height; y++) {
@@ -52,52 +53,57 @@ function gambar_background() {
       lib.draw_dot(x, y, warnaBaris);
     }
   }
+}
 
-  // Bukit belakang
-  const bukitBelakang = [
-    { x: 0, y: canvas.height * 0.77 },
-    { x: kanan * 0.10, y: canvas.height * 0.76 },
-    { x: kanan * 0.20, y: canvas.height * 0.74 },
-    { x: kanan * 0.32, y: canvas.height * 0.79 },
-    { x: kanan * 0.45, y: canvas.height * 0.78 },
-    { x: kanan * 0.58, y: canvas.height * 0.74 },
-    { x: kanan * 0.72, y: canvas.height * 0.77 },
-    { x: kanan * 0.86, y: canvas.height * 0.78 },
-    { x: kanan, y: canvas.height * 0.75 },
-    { x: kanan, y: bawah },
-    { x: 0, y: bawah },
-  ];
-  const warnaBukitBelakang = { r: 162, g: 207, b: 77 };
-  lib.polygon(bukitBelakang, garisBatas);
-  lib.FloodFillNonRecursive(Math.floor(canvas.width * 0.5),Math.floor(canvas.height * 0.9),warnaBukitBelakang,garisBatas);
+const konturBelakang = [
+  [0, 0.77], [0.10, 0.76], [0.20, 0.74], [0.32, 0.79],
+  [0.45, 0.78], [0.58, 0.74], [0.72, 0.77], [0.86, 0.78], [1, 0.77],
+];
+const konturTengah = [
+  [0, 0.84], [0.25, 0.82], [0.45, 0.88], [0.68, 0.84],
+  [0.84, 0.81], [1, 0.84],
+];
+const konturDepan = [
+  [0, 0.89], [0.30, 0.86], [0.55, 0.92], [1, 0.89],
+];
 
-  // Tanah bagian tengah
-  const tanahTengah = [
-    { x: 0, y: canvas.height * 0.84 },
-    { x: kanan * 0.25, y: canvas.height * 0.82 },
-    { x: kanan * 0.45, y: canvas.height * 0.88 },
-    { x: kanan * 0.68, y: canvas.height * 0.84 },
-    { x: kanan * 0.84, y: canvas.height * 0.81 },
-    { x: kanan, y: canvas.height * 0.83 },
-    { x: kanan, y: bawah },
-    { x: 0, y: bawah },
-  ];
-  const warnaTanahTengah = { r: 120, g: 173, b: 53 };
-  lib.polygon(tanahTengah, garisBatas);
-  lib.FloodFillNonRecursive(Math.floor(canvas.width * 0.5),Math.floor(canvas.height * 0.92),warnaTanahTengah,garisBatas);
+function hitungTinggiKontur(kontur, x) {
+  const posisi = x / canvas.width;
 
-  // Lapisan rumput paling depan
-  const rumputDepan = [
-    { x: 0, y: canvas.height * 0.89 },
-    { x: kanan * 0.30, y: canvas.height * 0.86 },
-    { x: kanan * 0.55, y: canvas.height * 0.92 },
-    { x: kanan, y: canvas.height * 0.88 },
-    { x: kanan, y: bawah },
-    { x: 0, y: bawah },
-  ];
-  const warnaRumputDepan = { r: 23, g: 77, b: 43 };
-  lib.polygon(rumputDepan, garisBatas);
-  lib.FloodFillNonRecursive(Math.floor(canvas.width * 0.5),Math.floor(canvas.height * 0.96),warnaRumputDepan,garisBatas);
+  for (let i = 0; i < kontur.length - 1; i++) {
+    const titikAwal = kontur[i];
+    const titikAkhir = kontur[i + 1];
+
+    if (posisi <= titikAkhir[0]) {
+      const bagian = (posisi - titikAwal[0]) / (titikAkhir[0] - titikAwal[0]);
+      return (titikAwal[1] + (titikAkhir[1] - titikAwal[1]) * bagian) * canvas.height;
+    }
+  }
+
+  return kontur[kontur.length - 1][1] * canvas.height;
+}
+
+function gambarTanahBergerak(offset) {
+  const warnaBelakang = { r: 162, g: 207, b: 77 };
+  const warnaTengah = { r: 120, g: 173, b: 53 };
+  const warnaDepan = { r: 23, g: 77, b: 43 };
+
+  for (let x = 0; x < canvas.width; x++) {
+    const posisiSumber = (x + offset) % canvas.width;
+    const yBelakang = hitungTinggiKontur(konturBelakang, posisiSumber);
+    const yTengah = hitungTinggiKontur(konturTengah, posisiSumber);
+    const yDepan = hitungTinggiKontur(konturDepan, posisiSumber);
+
+    for (let y = Math.floor(yBelakang); y < yTengah; y++) {
+      lib.draw_dot(x, y, warnaBelakang);
+    }
+    for (let y = Math.floor(yTengah); y < yDepan; y++) {
+      lib.draw_dot(x, y, warnaTengah);
+    }
+    for (let y = Math.floor(yDepan); y < canvas.height; y++) {
+      lib.draw_dot(x, y, warnaDepan);
+    }
+  }
 }
 
 gambar_background();
@@ -166,54 +172,182 @@ let skirt = [
   lib.polygon(skirt, abu);
   // lib.FloodFillNonRecursive(225 + balonX,500 + balonY,merah,abu);
 }
-function gambar_pohon(x,y){
+function gambar_pohon(x,y,skala=1,alas=alasPohon){
     let batang = [
-        {x:x, y:800},
-        {x:x+40, y:800},
-        {x:x+40, y:800-y},
-        {x:x, y:800-y}
+        {x:Math.round(x), y:Math.round(alas)},
+        {x:Math.round(x+40*skala), y:Math.round(alas)},
+        {x:Math.round(x+40*skala), y:Math.round(alas-y*skala)},
+        {x:Math.round(x), y:Math.round(alas-y*skala)}
     ];
 
     let daun = [
-      {x:x+20, y:800-y-150},
-      {x:x-50, y:800-y},
-      {x:x+90, y:800-y},
+      {x:Math.round(x+20*skala), y:Math.round(alas-y*skala-150*skala)},
+      {x:Math.round(x-50*skala), y:Math.round(alas-y*skala)},
+      {x:Math.round(x+90*skala), y:Math.round(alas-y*skala)},
     ]
 
     lib.polygon(batang, abu);
     lib.polygon(daun,abu)
-    // lib.FloodFillNonRecursive(x+20,700,coklat,abu);
-    // lib.FloodFillNonRecursive(x+20,600,hijau,abu);
+    lib.FloodFillNonRecursive(Math.round(x+20*skala), Math.round(alas-y*skala/2), coklat, abu);
+    lib.FloodFillNonRecursive(Math.round(x+20*skala), Math.round(alas-y*skala-75*skala), hijau, abu);
 
 }
+function gambarPohonLatar(){
+  for(let i=0; i<pohonLatar.length; i++){
+    const posisiKontur = (pohonLatar[i] + backgroundOffset) % canvas.width;
+    const alas = Math.round(hitungTinggiKontur(konturBelakang, posisiKontur));
+    gambar_pohon(pohonLatar[i], 80, 0.2, alas);
+  }
+}
 function cek_collision(){
-  
-  let balonKiri = 250;
-  let balonKanan = 450;
-  let balonBawah = 810 + balonY;
-  for(let i=0;i<pohon.length;i++){
+  const sisiKiriBalon = [
+    [180, 225], [190, 160], [230, 140], [280, 130],
+    [340, 135], [390, 155], [440, 180], [485, 195],
+  ];
+  const sisiKananBalon = [
+    [180, 225], [190, 280], [230, 310], [280, 320],
+    [340, 315], [390, 295], [440, 270], [485, 255],
+  ];
+  const keranjangKiri = 185 + balonX;
+  const keranjangKanan = 265 + balonX;
+  const keranjangAtas = 565 + balonY;
+  const keranjangBawah = 650 + balonY;
 
-    let pohonKiri = pohon[i].x;
-    let pohonKanan = pohon[i].x + 40;
-    let pohonAtas = 800 - pohon[i].y;
-    if(
-        balonKanan > pohonKiri &&
-        balonKiri < pohonKanan &&
-        balonBawah > pohonAtas
-      ){
+  function cariBatasBalon(sisi, y) {
+    for (let i = 0; i < sisi.length - 1; i++) {
+      const awal = sisi[i];
+      const akhir = sisi[i + 1];
+
+      if (y <= akhir[0]) {
+        const bagian = (y - awal[0]) / (akhir[0] - awal[0]);
+        return awal[1] + (akhir[1] - awal[1]) * bagian;
+      }
+    }
+
+    return sisi[sisi.length - 1][1];
+  }
+
+  for (let i = 0; i < pohon.length; i++) {
+    const daunKiri = pohon[i].x - 50;
+    const daunKanan = pohon[i].x + 90;
+    const daunAtas = alasPohon - pohon[i].y - 150;
+    const daunBawah = alasPohon - pohon[i].y;
+    const batangKiri = pohon[i].x;
+    const batangKanan = pohon[i].x + 40;
+    const batangAtas = alasPohon - pohon[i].y;
+    const batangBawah = alasPohon;
+
+    for (
+      let y = Math.max(180, daunAtas - balonY);
+      y <= Math.min(485, daunBawah - balonY);
+      y++
+    ) {
+      const lebarDaun = 70 * (balonY + y - daunAtas) / 150;
+      const daunKiriPadaY = pohon[i].x + 20 - lebarDaun;
+      const daunKananPadaY = pohon[i].x + 20 + lebarDaun;
+      const balonKiriPadaY = balonX + cariBatasBalon(sisiKiriBalon, y);
+      const balonKananPadaY = balonX + cariBatasBalon(sisiKananBalon, y);
+
+      if (
+        balonKananPadaY >= daunKiriPadaY &&
+        balonKiriPadaY <= daunKananPadaY
+      ) {
         return true;
       }
     }
-  
-  return false
+
+    for (
+      let y = Math.max(180, batangAtas - balonY);
+      y <= Math.min(485, batangBawah - balonY);
+      y++
+    ) {
+      const balonKiriPadaY = balonX + cariBatasBalon(sisiKiriBalon, y);
+      const balonKananPadaY = balonX + cariBatasBalon(sisiKananBalon, y);
+
+      if (
+        balonKananPadaY >= batangKiri &&
+        balonKiriPadaY <= batangKanan
+      ) {
+        return true;
+      }
+    }
+
+    if (
+      (keranjangKanan > daunKiri &&
+        keranjangKiri < daunKanan &&
+        keranjangBawah > daunAtas &&
+        keranjangAtas < daunBawah) ||
+      (keranjangKanan > batangKiri &&
+        keranjangKiri < batangKanan &&
+        keranjangBawah > batangAtas &&
+        keranjangAtas < batangBawah)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }
+
+function gambarKeadaanAwal(){
+  lib.restart(context,canvas);
+  context.putImageData(backgroundImageData,0,0);
+  lib.image_data = context.getImageData(0,0,canvas.width,canvas.height);
+  gambarTanahBergerak(backgroundOffset);
+  gambarPohonLatar();
+  gambar_balon();
+  for(let i=0; i<pohon.length; i++){
+    gambar_pohon(pohon[i].x,pohon[i].y);
+  }
+  context.putImageData(lib.image_data,0,0);
+}
+
+function gambarPesanGameOver(){
+  context.fillStyle = "black";
+  context.font = "bold 36px Arial";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText("GAME OVER - Klik untuk restart", canvas.width / 2, canvas.height / 2);
+}
+
+function restartGame(){
+  balonX = 120;
+  balonY = 120;
+  kecepatanY = 0;
+  heating = false;
+  backgroundOffset = 0;
+  pohon = [
+    {x:800, y:150, scored:false},
+    {x:1200, y:350, scored:false},
+    {x:1600, y:200, scored:false},
+  ];
+  pohonLatar = [160, 390, 650, 970, 1280, 1580, 1780];
+  gameOver = false;
+  gameStarted = false;
+  score = 0;
+  bensin = 100;
+  inpo_score.textContent = "Score: 0";
+  bar_bensin.value = 100;
+  inpo_bensin.textContent = "100%";
+  gambarKeadaanAwal();
+}
+
+// Tampilkan posisi awal game tanpa menjalankan pergerakan.
+gambarKeadaanAwal();
+
 function update(){
-  if(gameOver){
+  if(gameOver || !gameStarted){
     return
   }
   lib.restart(context,canvas)
   context.putImageData(backgroundImageData, 0, 0)
   lib.image_data = context.getImageData(0, 0, canvas.width, canvas.height)
+  backgroundOffset = (backgroundOffset + 2) % canvas.width
+  gambarTanahBergerak(backgroundOffset)
+  for(let i=0; i<pohonLatar.length; i++){
+    pohonLatar[i] = (pohonLatar[i] - 2 + canvas.width) % canvas.width;
+  }
+  gambarPohonLatar();
   // console.log("update jalan");
   // balonY -=1
   for(let i = 0; i<pohon.length;i++){
@@ -256,22 +390,37 @@ function update(){
     kecepatanY = 0
   }
   if(cek_collision()){
-    alert("tabrak")
     gameOver = true;
+    heating = false;
   }
   gambar_balon()
   for(let i=0; i<pohon.length; i++){
     gambar_pohon(pohon[i].x,pohon[i].y)
 }
   context.putImageData(lib.image_data,0,0 )
-  requestAnimationFrame(update)
+if(gameOver){
+  gambarPesanGameOver();
+}
+requestAnimationFrame(update)
 }
 
 canvas.addEventListener("mousedown",function(){
-  heating = true
+  if (gameStarted && !gameOver) {
+    heating = true
+  }
 })
 canvas.addEventListener("mouseup",function(){
   heating = false
 })
 
-update()
+canvas.addEventListener("click", function(){
+  if(gameOver){
+    restartGame();
+    return;
+  }
+
+  if (!gameStarted && !gameOver) {
+    gameStarted = true;
+    update();
+  }
+})
