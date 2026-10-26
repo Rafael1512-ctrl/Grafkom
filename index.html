@@ -4,14 +4,42 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Document</title>
     <style>
+        .canvas-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
         canvas {
-            border : 2px solid black;
-            margin : 0 auto;
+            display: block;
+            border: 2px solid black;
+        }
+
+        #pesan-game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 16px 24px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            font: bold 28px Arial, sans-serif;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        #pesan-game-over[hidden] {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <canvas width="1850" height="1000" id="mycanvas"></canvas>
+    <div class="canvas-wrapper">
+        <canvas width="1850" height="1000" id="mycanvas"></canvas>
+        <div id="pesan-game-over" role="status" aria-live="polite" hidden>
+            GAME OVER - Klik untuk restart
+        </div>
+    </div>
     <div id="fuel">
         Bensin: <progress id="bensin" max="100" value="100"></progress>
         <span id="teksbensin">100%</span>
