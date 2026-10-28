@@ -178,8 +178,7 @@ function cek_collision(){
 
 function gambarKeadaanAwal(){
   lib.restart(context,canvas);
-  context.putImageData(backgroundImageData,0,0);
-  lib.image_data = context.getImageData(0,0,canvas.width,canvas.height);
+
   for (let i = 0; i < pohon.length; i++) {
     gambar_pohon(pohon[i]);
 }
