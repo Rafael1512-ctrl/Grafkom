@@ -7,10 +7,10 @@ let context = canvas.getContext("2d", {
 
 let image_data = context.getImageData(0, 0, canvas.width, canvas.height);
 let lib = new myLib(canvas.width, image_data);
-let abu = { r: 150, g: 150, b: 150, a: 255 };
-let coklat = { r: 139, g: 69, b: 19 };
-let hijau = { r: 0, g: 255, b: 0 };
-let merah = { r: 255, g: 0, b: 0};
+let abu = {r:150, g:150, b:150};
+let coklat = {r:139, g:69, b:19};
+let hijau = {r:0, g:255, b:0};
+let merah = {r:255, g: 0, b:0};
 
 let balonX = 120
 let balonY = 120
@@ -35,144 +35,107 @@ const pesanGameOver = document.querySelector("#pesan-game-over");
 
 function gambar_balon() {
   var kotak1 = [
-    { x:265, y:650 },
-    { x:265, y:580 },
-    { x:185, y:580 },
-    { x:185, y:650 },
+    {x:265, y:650},
+    {x:265, y:580},
+    {x:185, y:580}, 
+    {x:185, y:650}
   ];
   var kotak2 = [
-    { x:265, y:650 },
-    { x:265, y:565 },
-    { x:185, y:565 },
-    { x:185, y:650 },
+    {x:265, y:650}, 
+    {x:265, y:565},
+    {x:185, y:565}, 
+    {x:185, y:650}
   ];
-  let balon = [
-    { x:225, y:180 },
-
-    { x:160, y:190 },
-    { x:140, y:230 },
-    { x:130, y:280 },
-
-    { x:135, y:340 },
-    { x:155, y:390 },
-    { x:180, y:440 },
-
-    { x:195, y:485 },
-
-    { x:255, y:485 },
-
-    { x:270, y:440 },
-    { x:295, y:390 },
-    { x:315, y:340 },
-
-    { x:320, y:280 },
-    { x:310, y:230 },
-    { x:280, y:190 },
-];
-let skirt = [
-    { x: 195, y: 485 },
-    { x: 255, y: 485 },
-    { x: 265, y: 525 },
-    { x: 185, y: 525 },
+  
+  let skirt = [
+    {x:181, y:485},
+    {x:269, y:485},
+    {x:255, y:525},
+    {x:195, y:525}
   ];
 
-  kotak1 = lib.multiple_translate(kotak1,{x:balonX, y:balonY})
-  kotak2 = lib.multiple_translate(kotak2,{x:balonX,y:balonY})
-  balon = lib.multiple_translate(balon,{x:balonX, y:balonY})
-  skirt = lib.multiple_translate(skirt,{x:balonX,y:balonY})
+  kotak1 = lib.multiple_translate(kotak1, {x: balonX, y: balonY});
+  kotak2 = lib.multiple_translate(kotak2, {x: balonX, y: balonY});
+  skirt = lib.multiple_translate(skirt, {x: balonX, y: balonY});
+
   lib.polygon(kotak1, coklat);
   lib.polygon(kotak2, coklat);
-  lib.dda_line(205+balonX,525+balonY,205+balonX,565+balonY,coklat);
-  lib.FloodFillNonRecursive(Math.round(225 + balonX) , Math.round(620 +balonY), coklat, coklat);
-  lib.dda_line(245+balonX,525+balonY,245+balonX,565+balonY,coklat);
-  lib.FloodFillNonRecursive(Math.round(225 +balonX), Math.round(575+balonY), coklat, coklat);
+  lib.dda_line(205+balonX, 525+balonY, 205+balonX, 565+balonY, coklat);
+  lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(620 + balonY), coklat, coklat);
+  lib.dda_line(245+balonX, 525+balonY, 245+balonX, 565+balonY, coklat);
+  lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(575 + balonY), coklat, coklat);
 
-  lib.polygon(balon, coklat);
-  lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(320+balonY), merah, coklat);
+  lib.elips(225+balonX, 330+balonY, 95, 175, coklat);
+  
+  lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(330+balonY + 140), merah, coklat);
+
   lib.polygon(skirt, coklat);
-  lib.FloodFillNonRecursive(Math.round(225 + balonX), Math.round(500 + balonY),coklat,coklat);
+  lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(515+balonY), coklat, coklat);
 }
 
 function gambar_pohon(pohon) {
   const x =pohon.x;
-  const h =pohon.y; 
-  
-  const r = 80; 
+  const h =pohon.y;  
 
   const atasBatang = alasPohon - h;
   const batang = [
-    {x: x-20, y: alasPohon},
-    {x: x+20, y: alasPohon},
-    {x: x+20, y: atasBatang},
-    {x: x-20, y: atasBatang},
+    {x:x-20, y:alasPohon},
+    {x:x+20, y:alasPohon},
+    {x:x+20, y:atasBatang},
+    {x:x-20, y:atasBatang},
   ];
 
   lib.polygon(batang, abu);
   lib.FloodFillNonRecursive(x, alasPohon-75, coklat, abu);
 
   function gambar_daun(dx, dy) {
-    const cx =x + dx;
-    const cy = atasBatang + dy; 
+    const cx = x+dx;
+    const cy = atasBatang+dy; 
     
-    for (let i = 1; i <= r; i++) {
-      lib.lingkaran_polar(cx, cy, i, hijau);
-    }
+    lib.lingkaran_polar(cx, cy, 80, hijau);
+    lib.FloodFillNonRecursive(cx+79,cy,hijau, hijau)
+    
   }
 
   gambar_daun(-30,-30);
-  gambar_daun(-40,-50);
-  gambar_daun(-20,-50);
-  gambar_daun(-10,-80);
-  gambar_daun(20,-60);
+  gambar_daun(-25,-70);
   gambar_daun(30,-70);
   gambar_daun(30,-35);
 }
 
-function kotakBertabrakan(a, b) {
-  return a.kiri < b.kanan &&
-    a.kanan > b.kiri &&
-    a.atas < b.bawah &&
-    a.bawah > b.atas;
+function jarak(point1, point2) {
+  return Math.sqrt((point2.x-point1.x)**2 + (point2.y-point1.y)**2);
 }
 
-function cek_collision(){
-  const badanBalon = {
-    kiri: balonX + 130,
-    kanan: balonX + 320,
-    atas: balonY + 180,
-    bawah: balonY + 485,
-  };
-  const keranjangBalon = {
-    kiri: balonX + 185,
-    kanan: balonX + 265,
-    atas: balonY + 485,
-    bawah: balonY + 650,
-  };
+function cek_collision() { 
+  const titikBalon = [
+    {x:balonX+130, y:balonY+180}, 
+    {x:balonX+320, y:balonY+180}, 
+    {x:balonX+130, y:balonY+485}, 
+    {x:balonX+320, y:balonY+485}, 
+    
+    {x:balonX+185, y:balonY+485}, 
+    {x:balonX+265, y:balonY+485}, 
+    {x:balonX+185, y:balonY+650}, 
+    {x:balonX+265, y:balonY+650}  
+  ];
 
+  const radius = 80;
   for (let i = 0; i < pohon.length; i++) {
-    const daunPohon = {
-      kiri: pohon[i].x - 50,
-      kanan: pohon[i].x + 90,
-      atas: alasPohon - pohon[i].y - 150,
-      bawah: alasPohon - pohon[i].y,
-    };
-    const batangPohon = {
-      kiri: pohon[i].x,
-      kanan: pohon[i].x + 40,
-      atas: alasPohon - pohon[i].y,
-      bawah: alasPohon,
-    };
+    const pohonX = pohon[i].x;
+    const atasBatang = alasPohon - pohon[i].y;
+    const daun1 = {x:pohonX-30, y:atasBatang-30};
+    const daun2 = {x:pohonX-25, y:atasBatang-70};
+    const daun3 = {x:pohonX+30, y:atasBatang-70};
+    const daun4 = {x:pohonX+30, y:atasBatang-35};
 
-    if (
-      kotakBertabrakan(badanBalon, daunPohon) ||
-      kotakBertabrakan(badanBalon, batangPohon) ||
-      kotakBertabrakan(keranjangBalon, daunPohon) ||
-      kotakBertabrakan(keranjangBalon, batangPohon)
-    ) {
-      return true;
+    for (let j = 0; j < titikBalon.length; j++) {
+      const balon = titikBalon[j];
+      if (jarak(balon, daun1)<radius || jarak(balon, daun2)<radius || jarak(balon, daun3)<radius || jarak(balon, daun4)<radius) {
+        return true; 
+      }
     }
-  }
-
+  } 
   return false;
 }
 
@@ -196,9 +159,9 @@ function restartGame(){
   kecepatanY = 0;
   heating = false;
   pohon = [
-    {x:800, y:150, scored:false},
-    {x:1200, y:175, scored:false},
-    {x:1600, y:200, scored:false},
+    {x:800, y: 150, scored:false},
+    {x:1200, y: 175, scored:false},
+    {x:1600, y: 200, scored:false},
   ];
   gameOver = false;
   gameStarted = false;
@@ -222,7 +185,7 @@ function update(){
   // console.log("update jalan");
   // balonY -=1
   for(let i = 0; i<pohon.length;i++){
-    pohon[i].x -=2
+    pohon[i].x -= 5
     if(!pohon[i].scored && pohon[i].x + 40 < 250){
       score += 1
       inpo_score.textContent = `Score: ${score}`
@@ -235,8 +198,8 @@ function update(){
     }
   }
   if (heating && bensin > 0) {
-    kecepatanY -=2;
-    bensin -=0.08;
+    kecepatanY -=6
+    bensin -=0.5;
 
     bar_bensin.value= bensin;
     inpo_bensin.textContent = `${Math.ceil(bensin)}%`;
@@ -245,7 +208,7 @@ function update(){
       heating = false;
     }
   }
-  kecepatanY += 0.1
+  kecepatanY += 0.2
 
   if(kecepatanY <-5){
     kecepatanY = -5
