@@ -11,18 +11,20 @@ let abu = {r:150, g:150, b:150};
 let coklat = {r:139, g:69, b:19};
 let hijau = {r:0, g:255, b:0};
 let merah = {r:255, g: 0, b:0};
-
+const alasPohon = 940
+const tinggiBalon = 650
+let tanahY = alasPohon-tinggiBalon
 let balonX = 120
-let balonY = 120
+let balonY = tanahY
 let kecepatanY = 0
 let heating = false
-let tanahY = 160
-const alasPohon = 920
-let pohon = [
-  {x:800, y: 150, scored:false},
-  {x:1200, y: 175, scored:false},
-  {x:1600, y: 200, scored:false},
-]
+
+
+// let pohon = [
+//   {x:800, y: 150, scored:false},
+//   {x:1200, y: 175, scored:false},
+//   {x:1600, y: 200, scored:false},
+// ]
 let gameOver = false
 let gameStarted = false
 let score = 0
@@ -33,6 +35,23 @@ const inpo_bensin = document.querySelector("#teksbensin");
 const pesanGameOver = document.querySelector("#pesan-game-over");
 
 
+
+function jarakPohon(){
+  return Math.floor(300+Math.random()*81)
+}
+function tinggiPohonAcak() {
+  return Math.floor(Math.random()*120) + 150
+}
+function buatPohonAwal(){
+  const daftarpohon =[]
+  let x = canvas.width +120
+  for (let i = 0; i < 6; i++) {
+    daftarpohon.push({x: x,y: tinggiPohonAcak(),scored: false})
+    x += jarakPohon()
+  }
+  return daftarpohon
+}
+let pohon = buatPohonAwal()
 function gambar_balon() {
   var kotak1 = [
     {x:265, y:650},
@@ -65,8 +84,7 @@ function gambar_balon() {
   lib.dda_line(245+balonX, 525+balonY, 245+balonX, 565+balonY, coklat);
   lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(575 + balonY), coklat, coklat);
 
-  lib.elips(225+balonX, 330+balonY, 95, 175, coklat);
-  
+  lib.elips(225+balonX, 330+balonY, 145, 180, coklat);
   lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(330+balonY + 140), merah, coklat);
 
   lib.polygon(skirt, coklat);
@@ -96,7 +114,6 @@ function gambar_pohon(pohon) {
     lib.FloodFillNonRecursive(cx+79,cy,hijau, hijau)
     
   }
-
   gambar_daun(-30,-30);
   gambar_daun(-25,-70);
   gambar_daun(30,-70);
@@ -155,14 +172,10 @@ function gambarPesanGameOver(){
 
 function restartGame(){
   balonX = 120;
-  balonY = 120;
+  balonY = tanahY;
   kecepatanY = 0;
   heating = false;
-  pohon = [
-    {x:800, y: 150, scored:false},
-    {x:1200, y: 175, scored:false},
-    {x:1600, y: 200, scored:false},
-  ];
+  pohon = buatPohonAwal()
   gameOver = false;
   gameStarted = false;
   pesanGameOver.hidden = true;
@@ -191,9 +204,15 @@ function update(){
       inpo_score.textContent = `Score: ${score}`
       pohon[i].scored=true
     }
-    if(pohon[i].x <-100){
-      pohon[i].x =1200
-      pohon[i].y =Math.floor(Math.random()*250)+100
+    if(pohon[i].x <-120){
+      let palingkanan = -Infinity
+      for(let j=0;j<pohon.length;j++){
+        if(j !== i && pohon[j].x > palingkanan){
+          palingkanan = pohon[j].x
+        }
+      }
+      pohon[i].x =Math.max(canvas.width+120,palingkanan+jarakPohon())
+      pohon[i].y =tinggiPohonAcak()
       pohon[i].scored= false
     }
   }
@@ -218,6 +237,11 @@ function update(){
     kecepatanY = 5
   }
   balonY += kecepatanY
+
+  if (balonY < -150) {
+    balonY = -150
+    kecepatanY = 0
+  }
 
   if(balonY > tanahY){
     balonY = tanahY
