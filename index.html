@@ -10,8 +10,20 @@
         }
 
         canvas {
+            position: relative;
+            z-index: 1;
             display: block;
             border: 2px solid black;
+        }
+
+        .background-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            z-index: 0;
         }
 
         #pesan-game-over {
@@ -35,6 +47,7 @@
 </head>
 <body>
     <div class="canvas-wrapper">
+        <img class="background-image" src="bg grafkom.jpeg" alt="">
         <canvas width="1850" height="1000" id="mycanvas"></canvas>
         <div id="pesan-game-over" role="status" aria-live="polite" hidden>
             GAME OVER - Klik untuk restart

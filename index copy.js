@@ -10,6 +10,7 @@ let lib = new myLib(canvas.width, image_data);
 let abu = { r: 150, g: 150, b: 150, a: 255 };
 let coklat = { r: 139, g: 69, b: 19 };
 let hijau = { r: 0, g: 255, b: 0 };
+let merah = { r: 255, g: 0, b: 0};
 
 let balonX = 120
 let balonY = 120
@@ -19,7 +20,7 @@ let tanahY = 160
 const alasPohon = 920
 let pohon = [
   {x:800, y: 150, scored:false},
-  {x:1200, y: 350, scored:false},
+  {x:1200, y: 175, scored:false},
   {x:1600, y: 200, scored:false},
 ]
 let gameOver = false
@@ -30,70 +31,7 @@ let bensin = 100
 const bar_bensin = document.querySelector("#bensin");
 const inpo_bensin = document.querySelector("#teksbensin");
 const pesanGameOver = document.querySelector("#pesan-game-over");
-const garisBukit = { r: 100, g: 100, b: 100 };
 
-function gambarBukit(titik, warna, posisiIsi) {
-  lib.polygon(titik, garisBukit);
-  lib.FloodFillNonRecursive(
-    Math.floor(canvas.width / 2),
-    Math.floor(canvas.height * posisiIsi),
-    warna,
-    garisBukit
-  );
-}
-
-function gambar_background() {
-  const warnaAtas = { r: 184, g: 215, b: 138 };
-  const warnaBawah = { r: 240, g: 242, b: 197 };
-
-  for (let y = 0; y < canvas.height; y++) {
-    const t = Math.min(y / (canvas.height * 0.78), 1);
-    const warna = {
-      r: Math.round(warnaAtas.r + (warnaBawah.r - warnaAtas.r) * t),
-      g: Math.round(warnaAtas.g + (warnaBawah.g - warnaAtas.g) * t),
-      b: Math.round(warnaAtas.b + (warnaBawah.b - warnaAtas.b) * t),
-    };
-
-    for (let x = 0; x < canvas.width; x++) {
-      lib.draw_dot(x, y, warna);
-    }
-  }
-
-  const bukitBelakang = [
-    { x: 0, y: canvas.height * 0.77 },
-    { x: canvas.width * 0.2, y: canvas.height * 0.74 },
-    { x: canvas.width * 0.45, y: canvas.height * 0.79 },
-    { x: canvas.width * 0.7, y: canvas.height * 0.75 },
-    { x: canvas.width, y: canvas.height * 0.78 },
-    { x: canvas.width, y: canvas.height },
-    { x: 0, y: canvas.height },
-  ];
-  const bukitTengah = [
-    { x: 0, y: canvas.height * 0.85 },
-    { x: canvas.width * 0.3, y: canvas.height * 0.82 },
-    { x: canvas.width * 0.6, y: canvas.height * 0.87 },
-    { x: canvas.width, y: canvas.height * 0.83 },
-    { x: canvas.width, y: canvas.height },
-    { x: 0, y: canvas.height },
-  ];
-  const bukitDepan = [
-    { x: 0, y: canvas.height * 0.9 },
-    { x: canvas.width * 0.35, y: canvas.height * 0.87 },
-    { x: canvas.width * 0.7, y: canvas.height * 0.92 },
-    { x: canvas.width, y: canvas.height * 0.89 },
-    { x: canvas.width, y: canvas.height },
-    { x: 0, y: canvas.height },
-  ];
-
-  gambarBukit(bukitBelakang, { r: 162, g: 207, b: 77 }, 0.95);
-  gambarBukit(bukitTengah, { r: 120, g: 173, b: 53 }, 0.96);
-  gambarBukit(bukitDepan, { r: 23, g: 77, b: 43 }, 0.97);
-}
-
-gambar_background();
-context.putImageData(lib.image_data, 0, 0);
-const backgroundImageData = context.getImageData(0, 0, canvas.width, canvas.height);
-lib.image_data = context.getImageData(0, 0, canvas.width, canvas.height);
 
 function gambar_balon() {
   var kotak1 = [
@@ -142,19 +80,17 @@ let skirt = [
   kotak2 = lib.multiple_translate(kotak2,{x:balonX,y:balonY})
   balon = lib.multiple_translate(balon,{x:balonX, y:balonY})
   skirt = lib.multiple_translate(skirt,{x:balonX,y:balonY})
-  lib.polygon(kotak1, abu);
-  // lib.FloodFillNonRecursive(225 + balonX, 620 +balonY, coklat, abu);
-  lib.polygon(kotak2, abu);
-  // lib.FloodFillNonRecursive(225 +balonX, 575+balonY, { r: 140, g: 50, b: 50 }, abu);
-  lib.dda_line(205+balonX,525+balonY,205+balonX,565+balonY,abu);
-  lib.dda_line(245+balonX,525+balonY,245+balonX,565+balonY,abu);
+  lib.polygon(kotak1, coklat);
+  lib.polygon(kotak2, coklat);
+  lib.dda_line(205+balonX,525+balonY,205+balonX,565+balonY,coklat);
+  lib.FloodFillNonRecursive(Math.round(225 + balonX) , Math.round(620 +balonY), coklat, coklat);
+  lib.dda_line(245+balonX,525+balonY,245+balonX,565+balonY,coklat);
+  lib.FloodFillNonRecursive(Math.round(225 +balonX), Math.round(575+balonY), coklat, coklat);
 
-  
-  lib.polygon(balon, abu); 
-  // lib.FloodFillNonRecursive(225+balonX, 320+balonY, merah, abu);
-
-  lib.polygon(skirt, abu);
-  // lib.FloodFillNonRecursive(225 + balonX,500 + balonY,merah,abu);
+  lib.polygon(balon, coklat);
+  lib.FloodFillNonRecursive(Math.round(225+balonX), Math.round(320+balonY), merah, coklat);
+  lib.polygon(skirt, coklat);
+  lib.FloodFillNonRecursive(Math.round(225 + balonX), Math.round(500 + balonY),coklat,coklat);
 }
 
 function gambar_pohon(x, tinggi){
@@ -171,10 +107,10 @@ function gambar_pohon(x, tinggi){
     { x: x + 90, y: atasBatang },
   ];
 
-  lib.polygon(batang, abu);
-  lib.FloodFillNonRecursive(x + 20, alasPohon - tinggi / 2, coklat, abu);
-  lib.polygon(daun, abu);
-  lib.FloodFillNonRecursive(x + 20, atasBatang - 75, hijau, abu);
+  lib.polygon(batang, coklat);
+  lib.polygon(daun, coklat);
+  lib.FloodFillNonRecursive(x + 20, Math.floor(alasPohon - tinggi / 2), coklat, coklat);
+  lib.FloodFillNonRecursive(x + 20, atasBatang - 75, hijau, coklat);
 }
 
 function kotakBertabrakan(a, b) {
@@ -227,8 +163,6 @@ function cek_collision(){
 
 function gambarKeadaanAwal(){
   lib.restart(context,canvas);
-  context.putImageData(backgroundImageData,0,0);
-  lib.image_data = context.getImageData(0,0,canvas.width,canvas.height);
   for(let i=0; i<pohon.length; i++){
     gambar_pohon(pohon[i].x,pohon[i].y);
   }
@@ -247,7 +181,7 @@ function restartGame(){
   heating = false;
   pohon = [
     {x:800, y:150, scored:false},
-    {x:1200, y:350, scored:false},
+    {x:1200, y:175, scored:false},
     {x:1600, y:200, scored:false},
   ];
   gameOver = false;
@@ -269,8 +203,6 @@ function update(){
     return
   }
   lib.restart(context,canvas)
-  context.putImageData(backgroundImageData, 0, 0)
-  lib.image_data = context.getImageData(0, 0, canvas.width, canvas.height)
   // console.log("update jalan");
   // balonY -=1
   for(let i = 0; i<pohon.length;i++){
