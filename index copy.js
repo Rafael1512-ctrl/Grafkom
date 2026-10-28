@@ -157,24 +157,39 @@ let skirt = [
   // lib.FloodFillNonRecursive(225 + balonX,500 + balonY,merah,abu);
 }
 
-function gambar_pohon(x, tinggi){
-  const atasBatang = alasPohon - tinggi;
+function gambar_pohon(pohon) {
+  const x =pohon.x;
+  const h =pohon.y; 
+  
+  const r = 80; 
+
+  const atasBatang = alasPohon - h;
   const batang = [
-    { x: x, y: alasPohon },
-    { x: x + 40, y: alasPohon },
-    { x: x + 40, y: atasBatang },
-    { x: x, y: atasBatang },
-  ];
-  const daun = [
-    { x: x + 20, y: atasBatang - 150 },
-    { x: x - 50, y: atasBatang },
-    { x: x + 90, y: atasBatang },
+    {x: x-20, y: alasPohon},
+    {x: x+20, y: alasPohon},
+    {x: x+20, y: atasBatang},
+    {x: x-20, y: atasBatang},
   ];
 
   lib.polygon(batang, abu);
-  lib.FloodFillNonRecursive(x + 20, alasPohon - tinggi / 2, coklat, abu);
-  lib.polygon(daun, abu);
-  lib.FloodFillNonRecursive(x + 20, atasBatang - 75, hijau, abu);
+  lib.FloodFillNonRecursive(x, alasPohon-75, coklat, abu);
+
+  function gambar_daun(dx, dy) {
+    const cx =x + dx;
+    const cy = atasBatang + dy; 
+    
+    for (let i = 1; i <= r; i++) {
+      lib.lingkaran_polar(cx, cy, i, hijau);
+    }
+  }
+
+  gambar_daun(-30,-30);
+  gambar_daun(-40,-50);
+  gambar_daun(-20,-50);
+  gambar_daun(-10,-80);
+  gambar_daun(20,-60);
+  gambar_daun(30,-70);
+  gambar_daun(30,-35);
 }
 
 function kotakBertabrakan(a, b) {
@@ -229,9 +244,9 @@ function gambarKeadaanAwal(){
   lib.restart(context,canvas);
   context.putImageData(backgroundImageData,0,0);
   lib.image_data = context.getImageData(0,0,canvas.width,canvas.height);
-  for(let i=0; i<pohon.length; i++){
-    gambar_pohon(pohon[i].x,pohon[i].y);
-  }
+  for (let i = 0; i < pohon.length; i++) {
+    gambar_pohon(pohon[i]);
+}
   gambar_balon();
   context.putImageData(lib.image_data,0,0);
 }
@@ -316,15 +331,15 @@ function update(){
     gameOver = true;
     heating = false;
   }
-  for(let i=0; i<pohon.length; i++){
-    gambar_pohon(pohon[i].x,pohon[i].y)
-}
+  for(let i = 0; i < pohon.length; i++){
+    gambar_pohon(pohon[i]);
+  }
   gambar_balon()
   context.putImageData(lib.image_data,0,0 )
-if(gameOver){
-  gambarPesanGameOver();
-}
-requestAnimationFrame(update)
+  if(gameOver){
+    gambarPesanGameOver();
+  }
+  requestAnimationFrame(update)
 }
 
 canvas.addEventListener("mousedown",function(){
