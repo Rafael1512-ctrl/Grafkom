@@ -111,7 +111,7 @@ function gambar_pohon(pohon) {
     const cy = atasBatang+dy; 
     
     lib.lingkaran_polar(cx, cy, 80, hijau);
-    lib.FloodFillNonRecursive(cx-79,cy,hijau, hijau)
+    lib.FloodFillNonRecursive(cx-50,cy-30,hijau, hijau)
   }
 
   function gambar_daun_kanan(dx, dy) {
@@ -119,7 +119,7 @@ function gambar_pohon(pohon) {
     const cy = atasBatang+dy; 
     
     lib.lingkaran_polar(cx, cy, 80, hijau);
-    lib.FloodFillNonRecursive(cx+45,cy+45,hijau, hijau)
+    lib.FloodFillNonRecursive(cx+50,cy+50,hijau, hijau)
   }
 
   gambar_daun_kiri(-30,-30);
