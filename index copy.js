@@ -106,18 +106,26 @@ function gambar_pohon(pohon) {
   lib.polygon(batang, abu);
   lib.FloodFillNonRecursive(x, alasPohon-75, coklat, abu);
 
-  function gambar_daun(dx, dy) {
+  function gambar_daun_kiri(dx, dy) {
     const cx = x+dx;
     const cy = atasBatang+dy; 
     
     lib.lingkaran_polar(cx, cy, 80, hijau);
-    lib.FloodFillNonRecursive(cx+79,cy,hijau, hijau)
-    
+    lib.FloodFillNonRecursive(cx-79,cy,hijau, hijau)
   }
-  gambar_daun(-30,-30);
-  gambar_daun(-25,-70);
-  gambar_daun(30,-70);
-  gambar_daun(30,-35);
+
+  function gambar_daun_kanan(dx, dy) {
+    const cx = x+dx;
+    const cy = atasBatang+dy; 
+    
+    lib.lingkaran_polar(cx, cy, 80, hijau);
+    lib.FloodFillNonRecursive(cx+45,cy+45,hijau, hijau)
+  }
+
+  gambar_daun_kiri(-30,-30);
+  gambar_daun_kiri(-25,-70);
+  gambar_daun_kanan(30,-70);
+  gambar_daun_kanan(30,-35);
 }
 
 function jarak(point1, point2) {
