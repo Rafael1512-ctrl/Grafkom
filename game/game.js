@@ -99,7 +99,7 @@ export default class game{
             this.lib.restart()
             for(let i = 0; i<this.pohon.length;i++){
                 this.pohon[i].update()
-                if(!this.pohon[i].scored && this.pohon[i].x + 40 < 250){
+                if(!this.pohon[i].scored && this.pohon[i].x + 210){
                 this.score += 1
                 this.pohon[i].scored=true
                 }
