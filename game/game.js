@@ -99,15 +99,9 @@ export default class game{
             this.lib.restart()
             for(let i = 0; i<this.pohon.length;i++){
                 this.pohon[i].update()
-<<<<<<< Updated upstream
-                if(!this.pohon[i].scored && this.pohon[i].x + 210){
+                if(!this.pohon[i].scored && this.pohon[i].x + 40 <250){
                 this.score += 1
                 this.pohon[i].scored=true
-=======
-                if(!this.pohon[i].scored && this.pohon[i].x + 40 < 250){
-                    this.score += 1
-                    this.pohon[i].scored=true
->>>>>>> Stashed changes
                 }
                 if(this.pohon[i].x <-120){
                     let palingkanan = -Infinity
