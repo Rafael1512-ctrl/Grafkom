@@ -36,7 +36,7 @@ export default class game{
     return daftarpohon
     }
     jarak(point1, point2) {
-    return Math.sqrt((point2.x-point1.x)**2 + (point2.y-point1.y)**2)
+        return Math.sqrt((point2.x-point1.x)**2 + (point2.y-point1.y)**2)
     }
 
     cek_collision() { 
@@ -71,12 +71,12 @@ export default class game{
     return false
     }
     gambarInfo(){
-    this.context.fillStyle = "black"
-    this.context.font = "bold 48px Arial"
-    this.context.textAlign = "right"
-    this.context.fillText(`Score: ${this.score}`,this.canvas.width-24,45)
-    this.context.textAlign = "left"
-    this.context.fillText(`Fuel: ${Math.ceil(this.balon.bensin)}%`,24,45)
+        this.context.fillStyle = "black"
+        this.context.font = "bold 48px Arial"
+        this.context.textAlign = "right"
+        this.context.fillText(`Score: ${this.score}`,this.canvas.width-24,45)
+        this.context.textAlign = "left"
+        this.context.fillText(`Fuel: ${Math.ceil(this.balon.bensin)}%`,24,45)
     }
     gambarKeadaanAwal(){
         this.lib.restart()
@@ -89,29 +89,35 @@ export default class game{
     }
 
     gambarPesanGameOver(){
-    this.pesanGameOver.hidden = false
+        this.pesanGameOver.hidden = false
     }
 
     update(){
-    if(this.gameOver || !this.gameStarted){
+        if(this.gameOver || !this.gameStarted){
                 return
             }
             this.lib.restart()
             for(let i = 0; i<this.pohon.length;i++){
                 this.pohon[i].update()
+<<<<<<< Updated upstream
                 if(!this.pohon[i].scored && this.pohon[i].x + 210){
                 this.score += 1
                 this.pohon[i].scored=true
+=======
+                if(!this.pohon[i].scored && this.pohon[i].x + 40 < 250){
+                    this.score += 1
+                    this.pohon[i].scored=true
+>>>>>>> Stashed changes
                 }
                 if(this.pohon[i].x <-120){
-                let palingkanan = -Infinity
-                for(let j=0;j<this.pohon.length;j++){
-                    if(j !== i && this.pohon[j].x > palingkanan){
-                    palingkanan = this.pohon[j].x
+                    let palingkanan = -Infinity
+                    for(let j=0;j<this.pohon.length;j++){
+                        if(j !== i && this.pohon[j].x > palingkanan){
+                            palingkanan = this.pohon[j].x
+                        }
                     }
-                }
-                const xbaru=Math.max(this.canvas.width+120,palingkanan+this.jarakPohon())
-                this.pohon[i].respawn(xbaru,this.tinggiPohonAcak())
+                    const xbaru=Math.max(this.canvas.width+120,palingkanan+this.jarakPohon())
+                    this.pohon[i].respawn(xbaru,this.tinggiPohonAcak())
                 }
             }
             
@@ -133,14 +139,14 @@ export default class game{
             requestAnimationFrame(() => this.update())
     }
     restartGame(){
-    this.heating = false
-    this.pohon = this.buatPohonAwal()
-    this.gameOver = false
-    this.gameStarted = false
-    this.pesanGameOver.hidden = true
-    this.score = 0
-    this.balon.reset()
-    this.gambarKeadaanAwal()
+        this.heating = false
+        this.pohon = this.buatPohonAwal()
+        this.gameOver = false
+        this.gameStarted = false
+        this.pesanGameOver.hidden = true
+        this.score = 0
+        this.balon.reset()
+        this.gambarKeadaanAwal()
     }
 
     start() {
