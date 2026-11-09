@@ -40,36 +40,61 @@ export default class game{
     }
 
     cek_collision() { 
-    const titikBalon = [
-        {x:this.balon.balonX+130, y:this.balon.balonY+180}, 
-        {x:this.balon.balonX+320, y:this.balon.balonY+180}, 
-        {x:this.balon.balonX+130, y:this.balon.balonY+485}, 
-        {x:this.balon.balonX+320, y:this.balon.balonY+485},
-        {x:this.balon.balonX+380, y:this.balon.balonY+335}, 
-        
-        {x:this.balon.balonX+185, y:this.balon.balonY+485}, 
-        {x:this.balon.balonX+265, y:this.balon.balonY+485}, 
-        {x:this.balon.balonX+185, y:this.balon.balonY+650}, 
-        {x:this.balon.balonX+265, y:this.balon.balonY+650}  
-    ];
+        const titikBalon = []
+        const balonX = this.balon.balonX
+        const balonY = this.balon.balonY
 
-    const radius = 80
-    for (let i = 0; i < this.pohon.length; i++) {
-        const pohonX = this.pohon[i].x
-        const atasBatang = this.alasPohon - this.pohon[i].y
-        const daun1 = {x:pohonX-30, y:atasBatang-30}
-        const daun2 = {x:pohonX-25, y:atasBatang-70}
-        const daun3 = {x:pohonX+30, y:atasBatang-70}
-        const daun4 = {x:pohonX+30, y:atasBatang-35}
+        const pusatX = balonX + 225
+        const pusatY = balonY + 330
 
-        for (let j = 0; j < titikBalon.length; j++) {
-        const balon = titikBalon[j]
-        if (this.jarak(balon, daun1)<radius || this.jarak(balon, daun2)<radius || this.jarak(balon, daun3)<radius || this.jarak(balon, daun4)<radius) {
-            return true
+        for ( let sudut = 0; sudut<360; sudut +=10){
+            const radian = sudut*Math.PI/180
+
+            titikBalon.push({ x: pusatX+145*Math.cos(radian), y: pusatY+180*Math.sin(radian)})
         }
+
+        for(let x=181; x<=269;x+=10){
+            titikBalon.push({ x: balonX+x,y:balonY+485})
+            titikBalon.push({ x: balonX+x,y:balonY+650})
         }
-    } 
-    return false
+
+        for(let y=485; y<=650;y+=10){
+            titikBalon.push({ x: balonX+181,y:balonY+y})
+            titikBalon.push({ x: balonX+269,y:balonY+y})
+        }
+        const radius = 80
+        for (let i = 0; i < this.pohon.length; i++) {
+            const pohon = this.pohon[i]
+            const atasBatang = this.alasPohon - pohon.y
+            const daun =[
+                {x:pohon.x -30, y:atasBatang-30},
+                {x:pohon.x-25,y:atasBatang-70},
+                {x:pohon.x+30,y:atasBatang-70},
+                {x:pohon.x+30,y:atasBatang-35}
+            ] 
+
+            for (let j = 0; j < daun.length; j++) {
+                const pusatDaun = daun[j]
+                const dx =(pusatDaun.x-pusatX)/145
+                const dy =(pusatDaun.y - pusatY)/180
+                const diDalamElips = dx*dx+dy*dy<=1
+                const diDalamKeranjang=
+                    pusatDaun.x >= balonX + 181 &&
+                    pusatDaun.x <= balonX + 269 &&
+                    pusatDaun.y >= balonY + 485 &&
+                    pusatDaun.y <= balonY + 650
+            
+                if (diDalamElips||diDalamKeranjang){
+                    return true
+                }
+                for(let k=0;k<titikBalon.length;k++){
+                    if (this.jarak(titikBalon[k],pusatDaun) <radius) {
+                    return true
+                }
+            }
+            }
+        } 
+        return false
     }
     gambarInfo(){
         this.context.fillStyle = "black"
