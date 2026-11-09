@@ -29,8 +29,14 @@ export default class game{
     buatPohonAwal(){
         const daftarpohon =[]
         let x = this.canvas.width +120
-        for (let i = 0; i < 6; i++) {
-            daftarpohon.push(new pohon(this.lib,x,this.tinggiPohonAcak(),this.alasPohon,this.abu,this.coklat,this.hijau))
+        let tinggi
+        for (let i = 0; i < 6; i++) {  
+            if (i === 0) {
+                tinggi = 200
+            } else {
+                tinggi = this.tinggiPohonAcak()
+            }
+            daftarpohon.push(new pohon(this.lib,x,tinggi,this.alasPohon,this.abu,this.coklat,this.hijau))
             x += this.jarakPohon()
     }
     return daftarpohon
