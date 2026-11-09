@@ -44,7 +44,8 @@ export default class game{
         {x:this.balon.balonX+130, y:this.balon.balonY+180}, 
         {x:this.balon.balonX+320, y:this.balon.balonY+180}, 
         {x:this.balon.balonX+130, y:this.balon.balonY+485}, 
-        {x:this.balon.balonX+320, y:this.balon.balonY+485}, 
+        {x:this.balon.balonX+320, y:this.balon.balonY+485},
+        {x:this.balon.balonX+380, y:this.balon.balonY+335}, 
         
         {x:this.balon.balonX+185, y:this.balon.balonY+485}, 
         {x:this.balon.balonX+265, y:this.balon.balonY+485}, 
