@@ -27,15 +27,15 @@ export default class pohon{
         this.lib.FloodFillNonRecursive(x, this.alasPohon-75, this.coklat, this.abu)
 
         const gambar_daun=(dx, dy,kanan)=> {
-        const cx = x+dx
-        const cy = atasBatang+dy 
-        
-        this.lib.lingkaran_polar(cx, cy, 80, this.hijau)
-        if(kanan){
-            this.lib.FloodFillNonRecursive(cx+50,cy+30,this.hijau, this.hijau)
-        }else{
-            this.lib.FloodFillNonRecursive(cx-50,cy-30,this.hijau, this.hijau)   
-        }
+            const cx = x+dx
+            const cy = atasBatang+dy 
+            
+            this.lib.lingkaran_polar(cx, cy, 80, this.hijau)
+            if(kanan){
+                this.lib.FloodFillNonRecursive(cx+50,cy+30,this.hijau, this.hijau)
+            }else{
+                this.lib.FloodFillNonRecursive(cx-50,cy-30,this.hijau, this.hijau)   
+            }
         }
 
         gambar_daun(-30,-30,false)

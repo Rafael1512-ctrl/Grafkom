@@ -58,12 +58,10 @@ export default class game{
 
             titikBalon.push({ x: pusatX+145*Math.cos(radian), y: pusatY+180*Math.sin(radian)})
         }
-
         for(let x=181; x<=269;x+=10){
             titikBalon.push({ x: balonX+x,y:balonY+485})
             titikBalon.push({ x: balonX+x,y:balonY+650})
         }
-
         for(let y=485; y<=650;y+=10){
             titikBalon.push({ x: balonX+181,y:balonY+y})
             titikBalon.push({ x: balonX+269,y:balonY+y})
@@ -78,7 +76,6 @@ export default class game{
                 {x:pohon.x+30,y:atasBatang-70},
                 {x:pohon.x+30,y:atasBatang-35}
             ] 
-
             for (let j = 0; j < daun.length; j++) {
                 const pusatDaun = daun[j]
                 const dx =(pusatDaun.x-pusatX)/145
@@ -97,7 +94,7 @@ export default class game{
                     if (this.jarak(titikBalon[k],pusatDaun) <radius) {
                     return true
                 }
-            }
+                }
             }
         } 
         return false
@@ -131,7 +128,7 @@ export default class game{
             this.lib.restart()
             for(let i = 0; i<this.pohon.length;i++){
                 this.pohon[i].update()
-                if(!this.pohon[i].scored && this.pohon[i].x + 40 <250){
+                if(!this.pohon[i].scored && this.pohon[i].x <200){
                 this.score += 1
                 this.pohon[i].scored=true
                 }
@@ -173,12 +170,7 @@ export default class game{
         this.score = 0
         this.balon.reset()
         this.gambarKeadaanAwal()
-    }
-
-    start() {
-        this.bindEvents()
-        this.gambarKeadaanAwal()
-    }
+    }    
     bindEvents(){
         this.canvas.addEventListener("mousedown",() =>{
         if (this.gameStarted && !this.gameOver) {
@@ -200,6 +192,10 @@ export default class game{
             this.update()
         }
         });
+    }
+    start() {
+        this.bindEvents()
+        this.gambarKeadaanAwal()
     }
 }
 
